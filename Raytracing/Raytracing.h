@@ -1,8 +1,10 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 #include <array>
 #include <chrono>
-#include <glm/glm.hpp>
+#include <vector>
 
 #include "Section.h"
 
@@ -20,7 +22,7 @@ class Raytracing
 	uint32_t							_ny;
 	uint8_t								_ns;
 
-	glm::vec3*							_pic;
+	std::vector<glm::vec3>				_pic;
 
 	std::shared_ptr<Camera>				_cam;
 	std::shared_ptr<HitableCollection>	_collection;

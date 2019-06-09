@@ -37,12 +37,12 @@ void Section::defineSection(uint32_t idx, uint32_t size)
 	_size = size;
 }
 
-void Section::start(glm::vec3* pic, std::shared_ptr<HitableCollection> collection, std::shared_ptr<Camera> cam)
+void Section::start(std::vector<glm::vec3>& pic, std::shared_ptr<HitableCollection> collection, std::shared_ptr<Camera> cam)
 {
 	_isRunning = true;
 	_collection = collection;
 	_cam = cam;
-	_thread = std::make_unique<std::thread>([this](glm::vec3* pic) { this->process(pic); }, pic);
+	_thread = std::make_unique<std::thread>([this](std::vector<glm::vec3>* pic) { this->process(*pic); }, &pic);
 }
 
 void Section::access()
@@ -106,7 +106,7 @@ glm::vec3 Section::computeColor(const Ray& ray, const Hitable& world, int depth)
 	}
 }
 
-void Section::process(glm::vec3* pic)
+void Section::process(std::vector<glm::vec3>& pic)
 {
 	for (uint32_t cs = 0; cs < _ns; ++cs)
 	{

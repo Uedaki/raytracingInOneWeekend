@@ -5,6 +5,7 @@
 #include <memory>
 #include <mutex>
 #include <thread>
+#include <vector>
 
 class Camera;
 class Hitable;
@@ -36,7 +37,7 @@ public:
 	void defineGlobal(uint32_t nx, uint32_t ny, uint8_t ns);
 	void defineSection(uint32_t idx, uint32_t size);
 
-	void start(glm::vec3* pic, std::shared_ptr<HitableCollection> collection, std::shared_ptr<Camera> cam);
+	void start(std::vector<glm::vec3>& pic, std::shared_ptr<HitableCollection> collection, std::shared_ptr<Camera> cam);
 
 	void access(); // lock mutex to prevent the thread to modify pic
 	void endAccess(); // unlock mutex
@@ -48,5 +49,5 @@ public:
 	bool hasBecomeInactive();
 
 	glm::vec3	computeColor(const Ray& ray, const Hitable& world, int depth);
-	void		process(glm::vec3* pic);
+	void		process(std::vector<glm::vec3>& pic);
 };

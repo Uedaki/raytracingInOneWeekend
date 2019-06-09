@@ -8,10 +8,9 @@
 #include "Window.h"
 
 Raytracing::Raytracing(uint32_t width, uint32_t height, uint8_t nbSamples)
-	: _isRunning(false), _nx(width), _ny(height), _ns(nbSamples)
+	: _isRunning(false), _nx(width), _ny(height), _ns(nbSamples), _pic(width * height)
 {
-	_pic = new glm::vec3[width * height];
-	memset(_pic, 0, width * height * sizeof(glm::vec3));
+	memset(_pic.data(), 0, width * height * sizeof(glm::vec3));
 
 	uint32_t currStep = 0;
 	const uint32_t step = (width * height) / static_cast<uint32_t>(_sections.size());
