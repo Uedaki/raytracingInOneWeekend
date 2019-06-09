@@ -18,10 +18,9 @@ Section::Section()
 Section::~Section()
 {
 	_isRunning = false;
-	if (_thread)
+	if (_thread && _thread->joinable())
 	{
 		_thread->join();
-		delete _thread;
 	}
 }
 
@@ -38,15 +37,12 @@ void Section::defineSection(uint32_t idx, uint32_t size)
 	_size = size;
 }
 
-void Section::start(glm::vec3* pic, HitableCollection* collection, Camera& cam)
+void Section::start(glm::vec3* pic, std::shared_ptr<HitableCollection> collection, std::shared_ptr<Camera> cam)
 {
 	_isRunning = true;
-	_thread = new std::thread([this](glm::vec3* pic, HitableCollection* collection, Camera* cam, std::mutex* locker)
-		{ this->process(pic, collection, *cam, *locker); },
-		pic,
-		collection,
-		&cam,
-		&_locker);
+	_collection = collection;
+	_cam = cam;
+	_thread = std::make_unique<std::thread>([this](glm::vec3* pic) { this->process(pic); }, pic);
 }
 
 void Section::access()
@@ -78,8 +74,9 @@ bool Section::hasBecomeInactive()
 {
 	if (_hasBecomeInactive)
 	{
-		_thread->join();
-		delete _thread;
+		if (_thread->joinable())
+			_thread->join();
+		_thread.reset(nullptr);
 
 		_hasBecomeInactive = false;
 		return (true);
@@ -87,10 +84,10 @@ bool Section::hasBecomeInactive()
 	return (false);
 }
 
-glm::vec3 Section::computeColor(const Ray& ray, const Hitable* world, int depth)
+glm::vec3 Section::computeColor(const Ray& ray, const Hitable& world, int depth)
 {
 	HitRecord record;
-	if (world->hit(ray, 0.001f, 100.0f, record))
+	if (world.hit(ray, 0.001f, 100.0f, record))
 	{
 		Ray scattered;
 		glm::vec3 attenuation;
@@ -109,7 +106,7 @@ glm::vec3 Section::computeColor(const Ray& ray, const Hitable* world, int depth)
 	}
 }
 
-void Section::process(glm::vec3* pic, HitableCollection* collection, Camera& cam, std::mutex& locker)
+void Section::process(glm::vec3* pic)
 {
 	for (uint32_t cs = 0; cs < _ns; ++cs)
 	{
@@ -120,24 +117,24 @@ void Section::process(glm::vec3* pic, HitableCollection* collection, Camera& cam
 
 			float u = (static_cast<float>(cx) + ctmRand()) / static_cast<float>(_nx);
 			float v = (static_cast<float>(cy) + ctmRand()) / static_cast<float>(_ny);
-			Ray ray = cam.getRay(u, v);
+			Ray ray = _cam->getRay(u, v);
 
-			glm::vec3 rgb = (static_cast<float>(cs) * pic[cx + cy * _nx] + computeColor(ray, collection, 0)) / (static_cast<float>(cs + 1));
+			glm::vec3 rgb = (static_cast<float>(cs) * pic[cx + cy * _nx] + computeColor(ray, *_collection, 0)) / (static_cast<float>(cs + 1));
 
-			locker.lock();
+			_locker.lock();
 			pic[cx + cy * _nx] = rgb;
 
 			if (!_isRunning)
 			{
-				locker.unlock();
+				_locker.unlock();
 				return;
 			}
-			locker.unlock();
+			_locker.unlock();
 		}
 	}
 
-	locker.lock();
+	_locker.lock();
 	_isRunning = false;
 	_hasBecomeInactive = true;
-	locker.unlock();
+	_locker.unlock();
 }

@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include <memory>
+
 class Material;
 
 struct HitRecord
@@ -9,5 +11,5 @@ struct HitRecord
 	float t;
 	glm::vec3 p;
 	glm::vec3 normal;
-	Material* material;
+	std::shared_ptr<Material> material;
 };

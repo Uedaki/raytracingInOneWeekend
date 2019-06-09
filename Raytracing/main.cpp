@@ -1,6 +1,7 @@
 #include <glm/glm.hpp>
 
 #include <chrono>
+#include <memory>
 
 #include "Camera.h"
 #include "ctmRand.h"
@@ -13,38 +14,43 @@
 
 namespace
 {
-	HitableCollection* random_scene() {
+	std::shared_ptr<HitableCollection> random_scene()
+	{
 		int n = 500;
 		std::vector<std::shared_ptr<Hitable>> list;
-		list.push_back(std::make_shared<Sphere>(glm::vec3(0, -1000, 0), 1000, new Lambert(glm::vec3(0.5, 0.5, 0.5))));
+		list.push_back(std::make_shared<Sphere>(glm::vec3(0, -1000, 0), 1000, std::make_shared<Lambert>(glm::vec3(0.5, 0.5, 0.5))));
 		int i = 1;
-		for (int a = -11; a < 11; a++) {
-			for (int b = -11; b < 11; b++) {
+		for (int a = -11; a < 11; a++)
+		{
+			for (int b = -11; b < 11; b++)
+			{
 				float choose_mat = ctmRand();
 				glm::vec3 center(a + 0.9 * ctmRand(), 0.2, b + 0.9 * ctmRand());
-				if ((center - glm::vec3(4, 0.2, 0)).length() > 0.9) {
-					if (choose_mat < 0.8) {  // diffuse
-						list.push_back(std::make_shared<Sphere>(center, 0.2, new Lambert(glm::vec3(ctmRand() * ctmRand(),
+				if ((center - glm::vec3(4, 0.2, 0)).length() > 0.9)
+				{
+					if (choose_mat < 0.8)
+					{
+						list.push_back(std::make_shared<Sphere>(center, 0.2, std::make_shared<Lambert>(glm::vec3(ctmRand() * ctmRand(),
 							ctmRand() * ctmRand(),
 							ctmRand() * ctmRand()))));
 					}
-					else if (choose_mat < 0.95) { // metal
-						list.push_back(std::make_shared<Sphere>(center, 0.2, new Metal(glm::vec3(0.5f * (1.0f + ctmRand()),
+					else if (choose_mat < 0.95)
+					{
+						list.push_back(std::make_shared<Sphere>(center, 0.2, std::make_shared<Metal>(glm::vec3(0.5f * (1.0f + ctmRand()),
 							0.5f * (1.0f + ctmRand()),
 							0.5f * (1.0f + ctmRand())), 0.5f * ctmRand())));
 					}
-					else {  // glass
-						list.push_back(std::make_shared<Sphere>(center, 0.2, new Dialectric(1.5)));
+					else
+					{
+						list.push_back(std::make_shared<Sphere>(center, 0.2, std::make_shared<Dialectric>(1.5)));
 					}
 				}
 			}
 		}
-
-		list.push_back(std::make_shared<Sphere>(glm::vec3(0, 1, 0), 1, new Dialectric(1.5)));
-		list.push_back(std::make_shared<Sphere>(glm::vec3(-2, 1, 0), 1, new Lambert(glm::vec3(0.4, 0.2, 0.1))));
-		list.push_back(std::make_shared<Sphere>(glm::vec3(2, 1, 0), 1, new Metal(glm::vec3(0.7, 0.6, 0.5), 0)));
-
-		return new HitableCollection(list);
+		list.push_back(std::make_shared<Sphere>(glm::vec3(0, 1, 0), 1, std::make_shared<Dialectric>(1.5)));
+		list.push_back(std::make_shared<Sphere>(glm::vec3(-2, 1, 0), 1, std::make_shared<Lambert>(glm::vec3(0.4, 0.2, 0.1))));
+		list.push_back(std::make_shared<Sphere>(glm::vec3(2, 1, 0), 1, std::make_shared<Metal>(glm::vec3(0.7, 0.6, 0.5), 0)));
+		return std::make_shared<HitableCollection>(list);
 	}
 }
 
@@ -57,10 +63,10 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow)
 	glm::vec3 lookFrom(3, 1.5, 3);
 	glm::vec3 lookAt(0, 0, -1);
 	float dist_to_focus = static_cast<float>((lookFrom - lookAt).length());
-	Camera cam(lookFrom, lookAt, glm::vec3(0, 1, 0), 20, static_cast<float>(nx) / ny, 2, dist_to_focus);
+	std::shared_ptr<Camera> cam = std::make_shared<Camera>(lookFrom, lookAt, glm::vec3(0, 1, 0), 20, static_cast<float>(nx) / ny, 2, dist_to_focus);
 
 	Raytracing tracing(nx, ny, ns);
-	tracing.setCamera(&cam);
+	tracing.setCamera(cam);
 	tracing.setCollection(random_scene());
 
 	Window win(instance, nx, ny);

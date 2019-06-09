@@ -23,12 +23,20 @@ Raytracing::Raytracing(uint32_t width, uint32_t height, uint8_t nbSamples)
 	}
 }
 
-void Raytracing::setCamera(Camera* camera)
+Raytracing::~Raytracing()
+{
+	if (_isRunning)
+	{
+		endRender();
+	}
+}
+
+void Raytracing::setCamera(std::shared_ptr<Camera> camera)
 {
 	_cam = camera;
 }
 
-void Raytracing::setCollection(HitableCollection* collection)
+void Raytracing::setCollection(std::shared_ptr<HitableCollection> collection)
 {
 	_collection = collection;
 }
@@ -37,7 +45,7 @@ void Raytracing::start()
 {
 	for (Section& section : _sections)
 	{
-		section.start(_pic, _collection, *_cam);
+		section.start(_pic, _collection, _cam);
 	}
 	_activeSection = static_cast<uint8_t>(_sections.size());
 	_startTime = std::chrono::steady_clock::now();
@@ -48,8 +56,8 @@ void Raytracing::endRender()
 {
 	Clock endTime = std::chrono::steady_clock::now();
 	uint32_t total = static_cast<uint32_t>(std::chrono::duration_cast<std::chrono::seconds>(endTime - _startTime).count());
-	uint32_t hours = total / 60 / 24;
-	uint32_t minutes = (total / 60) % 24;
+	uint32_t hours = total / 60 / 60;
+	uint32_t minutes = (total / 60) % 60;
 	uint32_t seconds = total % 60;
 
 	OutputDebugStringA("Rendering finished in ");

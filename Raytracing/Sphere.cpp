@@ -3,7 +3,7 @@
 #include "HitRecord.h"
 #include "Material.h"
 
-Sphere::Sphere(glm::vec3 center, float radius, Material* material)
+Sphere::Sphere(glm::vec3 center, float radius, std::shared_ptr<Material> material)
 	: _center(center), _radius(radius), _material(material)
 {}
 

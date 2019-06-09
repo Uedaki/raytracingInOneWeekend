@@ -14,27 +14,28 @@ typedef std::chrono::time_point<std::chrono::steady_clock> Clock;
 
 class Raytracing
 {
-	bool					_isRunning;
+	bool								_isRunning;
 
-	uint32_t				_nx;
-	uint32_t				_ny;
-	uint8_t					_ns;
+	uint32_t							_nx;
+	uint32_t							_ny;
+	uint8_t								_ns;
 
-	glm::vec3*				_pic;
+	glm::vec3*							_pic;
 
-	Camera*					_cam;
-	HitableCollection*		_collection;
+	std::shared_ptr<Camera>				_cam;
+	std::shared_ptr<HitableCollection>	_collection;
 
-	uint8_t					_activeSection;
-	std::array<Section, 4>	_sections;
+	uint8_t								_activeSection;
+	std::array<Section, 4>				_sections;
 
-	Clock					_startTime;
+	Clock								_startTime;
 
 public:
 	Raytracing(uint32_t width, uint32_t height, uint8_t nbSamples);
+	~Raytracing();
 
-	void setCamera(Camera* camera);
-	void setCollection(HitableCollection* collection);
+	void setCamera(std::shared_ptr<Camera> camera);
+	void setCollection(std::shared_ptr<HitableCollection> collection);
 
 	void start();
 	void endRender();
