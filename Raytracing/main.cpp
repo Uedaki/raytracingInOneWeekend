@@ -56,6 +56,8 @@ namespace
 
 int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow)
 {
+	std::srand(time(nullptr));
+
 	uint32_t nx = 600;
 	uint32_t ny = 300;
 	uint8_t ns = 1;
@@ -78,15 +80,15 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow)
 	auto startTick = std::chrono::steady_clock::now();
 	while (win.isOpen())
 	{
-		if (elapsed > 1000.0f / 12)
+		if (elapsed > 1000.0f)
 		{
 			if (tracing.isRunning())
 				tracing.process(win);
-
-			win.handleEvents();
-			win.render();
 			elapsed = 0;
 		}
+
+		win.handleEvents();
+		win.render();
 
 		auto endTick = std::chrono::steady_clock::now();
 		elapsed += static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(endTick - startTick).count());

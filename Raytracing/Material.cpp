@@ -86,7 +86,9 @@ bool Dialectric::scatter(const Ray& in, const HitRecord& hit, glm::vec3& attenua
 	{
 		outwardNormal = -hit.normal;
 		ni_over_nt = _ri;
-		cosine = _ri * glm::dot(in.direction(), hit.normal) / in.direction().length();
+		//cosine = _ri * glm::dot(in.direction(), hit.normal) / in.direction().length();
+		cosine = glm::dot(in.direction(), hit.normal) / in.direction().length();
+		cosine = glm::sqrt(1 - _ri * _ri * (1 - cosine * cosine));
 	}
 	else
 	{
@@ -97,10 +99,7 @@ bool Dialectric::scatter(const Ray& in, const HitRecord& hit, glm::vec3& attenua
 	if (refract(in.direction(), outwardNormal, ni_over_nt, refracted))
 		reflectProb = schlick(cosine, _ri);
 	else
-	{
-		scattered = Ray(hit.p, refracted);
 		reflectProb = 1;
-	}
 	if (ctmRand() < reflectProb)
 		scattered = Ray(hit.p, reflected);
 	else

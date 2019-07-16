@@ -24,6 +24,7 @@ Raytracing::Raytracing(uint32_t width, uint32_t height, uint8_t nbSamples)
 
 Raytracing::~Raytracing()
 {
+	OutputDebugStringA("Stopping...\n");
 	if (_isRunning)
 	{
 		endRender();
