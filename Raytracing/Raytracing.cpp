@@ -36,9 +36,19 @@ void Raytracing::setCamera(std::shared_ptr<Camera> camera)
 	_cam = camera;
 }
 
+std::shared_ptr<Camera> Raytracing::getCamera()
+{
+	return (_cam);
+}
+
 void Raytracing::setCollection(std::shared_ptr<HitableCollection> collection)
 {
 	_collection = collection;
+}
+
+std::shared_ptr<HitableCollection> Raytracing::getCollection()
+{
+	return (_collection);
 }
 
 void Raytracing::start()

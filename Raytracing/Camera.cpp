@@ -2,6 +2,8 @@
 
 #include <glm/gtc/constants.hpp>
 
+#include <math.h>
+
 #include "ctmRand.h"
 
 namespace
@@ -31,11 +33,13 @@ Camera::Camera(glm::vec3 lookFrom, glm::vec3 lookAt, glm::vec3 up, float vfov, f
 	_v = glm::cross(_w, _u);
 
 	//_lowerLeft = glm::vec3(-halfWidth, -halfHeight, -1);
-	_lowerLeft = _origin - focus_dist * halfWidth * _u - focus_dist * halfHeight * _v - _w;
+	//_lowerLeft = _origin - focus_dist * halfWidth * _u - focus_dist * halfHeight * _v - _w;
+	_lowerLeft = _origin - halfWidth * _u - halfHeight * _v - _w;
 
-
-	_horizontal = focus_dist * 2 * halfWidth * _u;
-	_vertical = focus_dist * 2 * halfHeight * _v;
+	//_horizontal = focus_dist * 2 * halfWidth * _u;
+	//_vertical = focus_dist * 2 * halfHeight * _v;
+	_horizontal = 2 * halfWidth * _u;
+	_vertical = 2 * halfHeight * _v;  
 }
 
 Ray Camera::getRay(const float s, const float t) const

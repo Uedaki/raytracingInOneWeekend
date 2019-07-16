@@ -58,14 +58,18 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow)
 {
 	std::srand(time(nullptr));
 
-	uint32_t nx = 600;
-	uint32_t ny = 300;
-	uint8_t ns = 1;
+	uint32_t nx = 300;
+	uint32_t ny = 200;
+	uint8_t ns = 10;
 
-	glm::vec3 lookFrom(3, 1.5, 3);
-	glm::vec3 lookAt(0, 0, -1);
-	float dist_to_focus = static_cast<float>((lookFrom - lookAt).length());
-	std::shared_ptr<Camera> cam = std::make_shared<Camera>(lookFrom, lookAt, glm::vec3(0, 1, 0), 20, static_cast<float>(nx) / ny, 2, dist_to_focus);
+//	glm::vec3 lookFrom(3, 1.5, 3);
+	glm::vec3 lookFrom(13, 2, 3);
+//	glm::vec3 lookAt(0, 0, -1);
+	glm::vec3 lookAt(0, 0, 0);
+//	float dist_to_focus = static_cast<float>((lookFrom - lookAt).length());
+	float dist_to_focus = 13.5;
+	float aperture = 0.01;
+	std::shared_ptr<Camera> cam = std::make_shared<Camera>(lookFrom, lookAt, glm::vec3(0, 1, 0), 20, static_cast<float>(nx) / ny, aperture, dist_to_focus);
 
 	Raytracing tracing(nx, ny, ns);
 	tracing.setCamera(cam);
@@ -80,7 +84,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow)
 	auto startTick = std::chrono::steady_clock::now();
 	while (win.isOpen())
 	{
-		if (elapsed > 1000.0f)
+		if (elapsed > 1000.0f / 12)
 		{
 			if (tracing.isRunning())
 				tracing.process(win);

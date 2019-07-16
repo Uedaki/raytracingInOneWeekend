@@ -28,7 +28,7 @@ class Raytracing
 	std::shared_ptr<HitableCollection>	_collection;
 
 	uint8_t								_activeSection;
-	std::array<Section, 4>				_sections;
+	std::array<Section, 2>				_sections;
 
 	Clock								_startTime;
 
@@ -37,7 +37,9 @@ public:
 	~Raytracing();
 
 	void setCamera(std::shared_ptr<Camera> camera);
+	std::shared_ptr<Camera> getCamera();
 	void setCollection(std::shared_ptr<HitableCollection> collection);
+	std::shared_ptr<HitableCollection> getCollection();
 
 	void start();
 	void endRender();

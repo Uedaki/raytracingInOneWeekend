@@ -10,6 +10,7 @@ Sphere::Sphere(glm::vec3 center, float radius, std::shared_ptr<Material> materia
 bool Sphere::hit(const Ray& ray, const float t_min, const float t_max, HitRecord& record) const
 {
 	record.material = _material;
+
 	glm::vec3 oc = ray.origin() - _center;
 	float a = glm::dot(ray.direction(), ray.direction());
 	float b = glm::dot(oc, ray.direction());
