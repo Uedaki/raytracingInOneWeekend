@@ -24,27 +24,23 @@ Camera::Camera(glm::vec3 lookFrom, glm::vec3 lookAt, glm::vec3 up, float vfov, f
 {
 	_lens_radius = aperture / 2;
 
-	float theta = vfov * 3.14 / 180;
-	float halfHeight = glm::tan(theta / 2);
-	float halfWidth = aspect * halfHeight;
+	float theta = vfov * glm::pi<float>() / 180;
+	float half_height = glm::tan(theta / 2);
+	float half_width = aspect * half_height;
 
 	_w = glm::normalize(lookFrom - lookAt);
 	_u = glm::normalize(glm::cross(up, _w));
 	_v = glm::cross(_w, _u);
 
-	//_lowerLeft = glm::vec3(-halfWidth, -halfHeight, -1);
-	//_lowerLeft = _origin - focus_dist * halfWidth * _u - focus_dist * halfHeight * _v - _w;
-	_lowerLeft = _origin - halfWidth * _u - halfHeight * _v - _w;
+	_lowerLeft = _origin - half_width * focus_dist * _u - half_height * focus_dist * _v - focus_dist * _w;
 
-	//_horizontal = focus_dist * 2 * halfWidth * _u;
-	//_vertical = focus_dist * 2 * halfHeight * _v;
-	_horizontal = 2 * halfWidth * _u;
-	_vertical = 2 * halfHeight * _v;  
+	_horizontal = focus_dist * 2 * half_width * _u;
+	_vertical = focus_dist * 2 * half_height * _v;
 }
 
 Ray Camera::getRay(const float s, const float t) const
 {
-	//glm::vec3 rd = _lens_radius * random_in_unit_disk();
-	//glm::vec3 offset = _u * rd.x + _v * rd.y;
-	return (Ray(_origin, _lowerLeft + s * _horizontal + t * _vertical - _origin));
+	glm::vec3 rd = _lens_radius * random_in_unit_disk();
+	glm::vec3 offset = _u * rd.x + _v * rd.y;
+	return (Ray(_origin + offset, _lowerLeft + s * _horizontal + t * _vertical - _origin - offset));
 }

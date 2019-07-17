@@ -12,8 +12,5 @@ float ctmRand()
 	t = x ^ (x << 11);
 	x = y; y = z; z = w;
 	w = w ^ (w >> 19) ^ (t ^ (t >> 8));
-	float nbr = static_cast<float>(std::rand() % 1000) / 1000;
-
-	return (nbr);
 	return (static_cast<float>(w % 1000) / 1000);
 }

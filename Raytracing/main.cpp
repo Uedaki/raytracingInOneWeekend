@@ -47,9 +47,9 @@ namespace
 				}
 			}
 		}
-		list.push_back(std::make_shared<Sphere>(glm::vec3(0, 1, 0), 1, std::make_shared<Dialectric>(1.5)));
-		list.push_back(std::make_shared<Sphere>(glm::vec3(-2, 1, 0), 1, std::make_shared<Lambert>(glm::vec3(0.4, 0.2, 0.1))));
-		list.push_back(std::make_shared<Sphere>(glm::vec3(2, 1, 0), 1, std::make_shared<Metal>(glm::vec3(0.7, 0.6, 0.5), 0)));
+		list.push_back(std::make_shared<Sphere>(glm::vec3(0, 1, 0), 1, std::make_shared<Dialectric>(1.3)));
+		list.push_back(std::make_shared<Sphere>(glm::vec3(-4, 1, 0), 1, std::make_shared<Lambert>(glm::vec3(0.4, 0.2, 0.1))));
+		list.push_back(std::make_shared<Sphere>(glm::vec3(4, 1, 0), 1, std::make_shared<Metal>(glm::vec3(0.7, 0.6, 0.5), 0)));
 		return std::make_shared<HitableCollection>(list);
 	}
 }
@@ -58,17 +58,14 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR lpCmdLine, int nCmdShow)
 {
 	std::srand(time(nullptr));
 
-	uint32_t nx = 300;
-	uint32_t ny = 200;
+	uint32_t nx = 1200;
+	uint32_t ny = 800;
 	uint8_t ns = 10;
 
-//	glm::vec3 lookFrom(3, 1.5, 3);
 	glm::vec3 lookFrom(13, 2, 3);
-//	glm::vec3 lookAt(0, 0, -1);
 	glm::vec3 lookAt(0, 0, 0);
-//	float dist_to_focus = static_cast<float>((lookFrom - lookAt).length());
-	float dist_to_focus = 13.5;
-	float aperture = 0.01;
+	float dist_to_focus = 10;
+	float aperture = 0.1;
 	std::shared_ptr<Camera> cam = std::make_shared<Camera>(lookFrom, lookAt, glm::vec3(0, 1, 0), 20, static_cast<float>(nx) / ny, aperture, dist_to_focus);
 
 	Raytracing tracing(nx, ny, ns);

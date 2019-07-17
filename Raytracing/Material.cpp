@@ -86,9 +86,8 @@ bool Dialectric::scatter(const Ray& in, const HitRecord& hit, glm::vec3& attenua
 	{
 		outwardNormal = -hit.normal;
 		ni_over_nt = _ri;
-		//cosine = _ri * glm::dot(in.direction(), hit.normal) / in.direction().length();
 		cosine = glm::dot(in.direction(), hit.normal) / in.direction().length();
-		cosine = glm::sqrt(1 - _ri * _ri * (1 - cosine * cosine));
+		//cosine = glm::sqrt(1 - _ri * _ri * (1 - cosine * cosine));
 	}
 	else
 	{

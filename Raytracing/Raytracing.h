@@ -28,7 +28,7 @@ class Raytracing
 	std::shared_ptr<HitableCollection>	_collection;
 
 	uint8_t								_activeSection;
-	std::array<Section, 2>				_sections;
+	std::array<Section, 3>				_sections;
 
 	Clock								_startTime;
 
